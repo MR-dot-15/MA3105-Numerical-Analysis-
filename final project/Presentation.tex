@@ -1,4 +1,4 @@
-\documentclass[aspectratio=1610]{beamer}
+\documentclass[aspectratio=169]{beamer}
 \usetheme{lucid}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath, xcolor, graphicx}
@@ -11,6 +11,7 @@
 \title{The Cubic Spline Interpolation}
 \subtitle{MA3105 Group project and Presentation}
 \author{Rudra Mukhopadhyay}
+\date{November 23, 2021}
 
 \begin{document}
 \frame{
@@ -33,7 +34,7 @@
     \begin{itemize}
         \item Over an interval $\Omega = [a,b] (a,b \in \mathbb{R})$, a few points and the corresponding functional values are given.
         \item $\Pi := \{a = x_0, x_1, \dots, x_n = b\}$. $\forall x_i \in \Pi$, $x_i$ is called a \emph{knot}.
-        \item Instead of fitting a polynomial with degree $\leq n+1$, we fit a polynomial $s_i$ of degree $m$ over every interval $[x_i, x_{i+1}], i = 0, 1, \dots, n-1$.
+        \item Instead of fitting a polynomial with degree $\leq n$, we fit a polynomial $s_i$ of degree $m$ over every interval $[x_i, x_{i+1}], i = 0, 1, \dots, n-1$.
         \item Each of $s_i, i = 0, 1, \dots, n-1$ is called a \emph{spline}.
     \end{itemize}
 } 
@@ -62,7 +63,7 @@
 \section{About Cubic spline}
 \frame{
  \frametitle{The cubic spline}
-    $f \in C[a,b]$ and the mesh is given by $\Pi$ over the interval $\Omega$.\\
+    $f \in C(\omega)$ and the mesh is given by $\Pi$ over the interval $\Omega$.\\
     Consider $\mathcal{S} := \{s|s \in C^2(\Omega)\}$ such that-
     \begin{enumerate}
         \item $s(x_i) = f(x_i), \forall x_i \in \Pi$
@@ -98,8 +99,9 @@
         
         \item  \color{newgray}{Not-a-knot spline}\\
         \hspace{1cm}
-        \color{white}{$s'''(x_1) = s'''(x_2), s'''(x_{n-1}) = s'''(x_{n-1})$}
-        
+        \color{white}{$s'''_{[0,1]}(x_1) = s'''_{[1,2]}(x_1)$,\\
+        \hspace{1cm}
+        $s'''_{[n-2,n-1]}(x_{n-1}) = s'''_{[n-1,n]}(x_{n-1})$}
         \item \color{newgray}{Periodic spline}\\
         \hspace{1cm}
         \color{white}{$s(x_0) = s(x_n), s'(x_0) = s'(x_n)$}
@@ -113,7 +115,7 @@
         \item $s$ be the spline interpolate over $\Omega$.
         \item $\sigma_i := s''(x_i)$ over the interval $[x_i,x_{i+1}]$
         \item $s''$ is linear. Thus, $s''(x) = \dfrac{x_{i+1}-x}{h_i}\sigma_i + \dfrac{x-x_i}{h_i}\sigma_{i+1}, h_i:=x_{i+1}-x_i$
-        \item $s''$ is integrated twice, with the constraints $s(x_i) = f(x_i), s(x_{i+1} = f(x_{i+1})$. \item $s'$ has to be continuous over $\Omega$\\ 
+        \item $s''$ is integrated twice, with the constraints $s(x_i) = f(x_i), s(x_{i+1}) = f(x_{i+1})$. \item $s'$ has to be continuous over $\Omega$\\ 
         $\implies s'_i(x_{i+1}) = s'_{i+1}(x_{i+1}), i = 0,\dots, n-2$ 
     \end{enumerate}
 }
@@ -139,7 +141,11 @@
             \item $\mathcal{O}(n)$
         \end{itemize}
         \item Non-singularity:
-        
+        \begin{itemize}
+            \item For $n\geq 3$, let $T \in \mathbb{R}^{n \times n}$ be tridiagonal. 
+            \item $T$ is non-singular, only when $|b_i|\geq|a_i|+|c_i|, i = 2,\dots,n-1$ and $|b_1|>|c_1|, |b_n|>|a_n|$.\footnote{Thm 3.4. Suli, Mayers}
+            \item Justification: $U$ with no zero on its diagonal $\implies b^n_i \geq \big||b_i| - \big|\frac{a_i c_{i-1}}{b^n_{i-1}}\big|\big|>0$
+        \end{itemize}
     \end{itemize}
 }
 
@@ -166,17 +172,35 @@
     \end{itemize}
 }
 
+%\frame{
+% \frametitle{An intuitive justification}
+% \framesubtitle{For the error bound in natural cubic}
+%    \begin{enumerate}
+%    \item Assumption: the mesh is uniform
+%        \item $||f-s_N||_\infty = ||f-g+g-s_N||_\infty \leq ||f-g||_\infty %+ ||g-s_N||_\infty$
+%        \item $deg(g) \leq 3$ and $g''(a) = g''(b) = 0, f(x_i)=g(x_i) %\forall i \in \{0, \dots, n\}$
+%        \item Thus, $||g-s_N||_\infty = \mathcal{O}(h^4)$
+%        \item Because of (3), $||f''-g''||_\infty = %\max{\{||f''(a)-g''(a)||, ||f''(b)-g''(b)||\}} = c (\neq 0)$
+%        \item $||f-g||_\infty =\mathcal{O}(h^2)$
+%    \end{enumerate}
+%}
+
 \frame{
- \frametitle{An intuitive justification}
- \framesubtitle{For the error bound in natural cubic}
-    \begin{enumerate}
-    \item Assumption: the mesh is uniform
-        \item $||f-s_N||_\infty = ||f-g+g-s_N||_\infty \leq ||f-g||_\infty + ||g-s_N||_\infty$
-        \item $deg(g) \leq 3$ and $g''(a) = g''(b) = 0, f(x_i)=g(x_i) \forall i \in \{0, \dots, n\}$
-        \item Thus, $||g-s_N||_\infty = \mathcal{O}(h^4)$
-        \item Because of (3), $||f''-g''||_\infty = \max{\{||f''(a)-g''(a)||, ||f''(b)-g''(b)||\}} = c (\neq 0)$
-        \item $||f-g||_\infty =\mathcal{O}(h^2)$
-    \end{enumerate}
+ \frametitle{A different constraint}
+ \framesubtitle{The Hermite spline}
+    \large{Definition:}
+    \begin{itemize}
+        \item $f,s \in C^1(\Omega)$
+        \item $s(x_i) = f(x_i), s'(x_i) = f'(x_i), i = 0, \dots, n$
+        \item $deg(s_{[x_i, x_{i+1}]}) \leq 3, i = 0, \dots, n-1$
+    \end{itemize}
+    \vspace{0.5 cm}
+    \large{Computation:}
+    \begin{itemize}
+        \item $s_{[x_i, x_{i+1}]} := c_0 + c_1(x-x_i) + c_2(x-x_i)^2 + c_3(x-x_i)^3, i = 0, \dots, n-1$
+        \item Possible to directly compute the coefficients, e.g. $c_0 = f(x_i), c_1 = f'(x_i)$ etcetera.
+        \item $||f-s_H||_\infty \leq \dfrac{h^4||f^{(4)}||_\infty}{384}$
+    \end{itemize}
 }
 
 \section{Solving the problem}
@@ -235,7 +259,16 @@
      \end{table}
 }
 
-\section{Comparing with LIP, QIP}
+\section{Comparing with L-LIP, Q-LIP}
+\frame{
+ \frametitle{The linear and quadratic LIP}
+    \large{Linear, over $[x_0, x_1]$:}\\
+    $P_1(x) = \dfrac{(x - x_1)}{(x_0 - x_1)}y_0 + \dfrac{(x - x_0)}{(x_1- x_0)}y_1$\\
+    \vspace{.5cm}
+    \large{Quadratic, over $[x_0, x_2]$:}\\
+    $P_2(x) = y_0\dfrac{(x-x_1)(x-x_2)}{(x_0-x_1)(x_0-x_2)} + y_1\dfrac{(x-x_0)(x-x_2)}{(x_1-x_0)(x_1-x_2)} + y_2\dfrac{(x-x_0)(x-x_2)}{(x_2-x_0)(x_2-x_1)}$
+}
+
 \frame{
  \frametitle{Comparison with Lagrangian}
     \begin{figure}
@@ -254,53 +287,51 @@
             \hline
             n & $P_1(x)$ & $P_2(x)$ & $s_N(x)$\\
             \hline
+            5 & 0.064917 & 0.014416 & 0.048949\\
             \hline
-            5 & 0.064917 & 0.014416 & 0.059208\\
+            10 & 0.014825 & 0.001189 & 0.013057\\
             \hline
-            10 & 0.014825 & 0.001189 & 0.015507\\
+            15 & 0.005478 & 0.000391 & 0.005902\\
             \hline
-            15 & 0.005478 & 0.000391 & 0.007013\\
+            20 & 0.000690 & 0.000075 & 0.003340\\
             \hline
-            20 & 0.000690 & 0.000075 & 0.003943\\
+            25 & 0.000000 & 0.000047 & 0.002146\\
             \hline
-            25 & 0.000000 & 0.000047 & 0.002547\\
+            30 & 0.000000 & 0.000047 & 0.001474\\
             \hline
-            30 & 0.000000 & 0.000047 & 0.001778\\
+            35 & 0.000000 & 0.000031 & 0.001099\\
             \hline
-            35 & 0.000000 & 0.000031 & 0.001295\\
-            \hline
-            40 & 0.000000 & 0.000005 & 0.000976\\
+            40 & 0.000000 & 0.000005 & 0.000816\\
             \hline
         \end{tabular}
     \end{table}
 }   
 
 \frame{
- \frametitle{Comparison with Lagrangian}
+ \frametitle{Comparison with the Lagrangian}
  \framesubtitle{With different mesh density}
  \large{$L_2$ norm of the error}
     \begin{table}
         \centering
-        \begin{tabular}{|c|c|c|c}
+        \begin{tabular}{|c|c|c|c|}
             \hline
             n & $P_1(x)$ & $P_2(x)$ & $s_N(x)$\\
             \hline
+            5 & 0.135386 & 0.032530 & 0.276201\\
             \hline
-            5 & 0.135386 & 0.032530 & 0.337271\\
+            10 & 0.026198 & 0.002383 & 0.069094\\
             \hline
-            10 & 0.026198 & 0.002383 & 0.076190\\
+            15 & 0.010887 & 0.000749 & 0.030806\\
             \hline
-            15 & 0.010887 & 0.000749 & 0.032801\\
+            20 & 0.001568 & 0.000132 & 0.017352\\
             \hline
-            20 & 0.001568 & 0.000132 & 0.018169\\
+            25 & 0.000000 & 0.000087 & 0.011112\\
             \hline
-            25 & 0.000000 & 0.000087 & 0.011525\\
+            30 & 0.000000 & 0.000094 & 0.007720\\
             \hline
-            30 & 0.000000 & 0.000094 & 0.007955\\
+            35 & 0.000000 & 0.000068 & 0.005673\\
             \hline
-            35 & 0.000000 & 0.000068 & 0.005819\\
-            \hline
-            40 & 0.000000 & 0.000012 & 0.004442\\
+            40 & 0.000000 & 0.000012 & 0.004344\\
             \hline
         \end{tabular}
     \end{table}
@@ -310,7 +341,18 @@
  \frametitle{Remark}
     \begin{itemize}
         \item The error bound of a Lagrangian interpolate converges faster than a cubic spline interpolate.
-        \item On a uniform mesh with $n$ points $||f-p|| \leq \mathcal{K_L}|\pi_{n+1}(x)| = \mathcal{O}(h^{n+1})$, where $h:=\frac{b-a}{n-1}$.
+        \item On a uniform mesh with $n$ points, $||f-p|| \leq \mathcal{K_L}|\pi_{n+1}(x)| = \mathcal{O}(h^{n+1})$, where $h:=\frac{b-a}{n-1}$.
     \end{itemize}
+}
+
+\section{Conclusion}
+\frame{
+ \frametitle{References}
+    \begin{enumerate}
+        \item Süli, E., \& Mayers, D. F. (2003). \textit{An Introduction to Numerical Analysis}. Cambridge University Press. https://doi.org/10.1017/cbo9780511801181
+        \item Atkinson, K. (1989). \textit{An introduction to numerical analysis (2nd ed.)}. John Wiley \& Sons.
+        \item Burden, A., Burden, R., \& Faires, J. D. (2015). \textit{Numerical Analysis (10th ed.)}. CENGAGE Learning Custom Publishing.
+        \item Hall, C. A., \& Meyer, W. W. (1976b). \textit{Optimal error bounds for cubic spline interpolation}. Journal of Approximation Theory, 16(2), 105–122.
+    \end{enumerate}
 }
 \end{document}
