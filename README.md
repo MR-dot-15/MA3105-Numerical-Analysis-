@@ -1,5 +1,6 @@
 # MA3105-Numerical-Analysis-
 
 ### To-do
-- [X] Organise
+- [ ] Organising
+- [ ] Documenting about the folders
 - [ ] Commenting the codes
