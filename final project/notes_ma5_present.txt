@@ -1,0 +1,85 @@
+2
+This presentation attempts to present the fundamentals of the cubic spline interpolation techniques and their corresponding error bounds. 
+The function exp(x) is interpolated with cubic splines on the interval [-1,1], with n = 10, 20 and 40.
+At the end, a brief comparison of the cubic spline with the linear lagrange interpolating polynomial as well as the quadratic LIP is presented.
+
+3
+Over an interval [a,b], denoted by Omega, say, n+1 diferent points are given. pi = {x0, ..., xn} refers to the mesh of interest, where each knot or point in the mesh is denoted by x_i
+Fitting a polynomial of deg atmost n usually comes with high computational cost and the threat of overfitting
+An alternate choice is to find an interpolating polynomial of deg m, m ofcourse being lesser than n, over each of the subintervals.
+Every such piecewise interpolate makes one spline.
+
+4
+Just to illustrate the essance, the linear spline technique is depicted here. 
+We find this expression that is equivalent to the lagrangian linear interpolate for each subinterval.
+This inequality is a direct consequence of the Lagrange's error bound
+
+5
+m = 1,2,3 
+also, constraints on s', s'' on each interval
+
+6
+Ck implies that the kth derivative is cts on that interval
+
+7
+2n -> interpolating condition
+2(n-1) -> continuity/smoothness condition
+The remaining two constraints can be implied in quite a few ways, that leads to some distinct cubic spline interpolation techniques
+
+8
+
+9
+s can be defined as the "collection" of the piece-wise splines determined over all the subintervals
+
+10
+Via some algebraic manipulations we arrive at this equation.
+along with two boundary conditions it's thus a tridiagonal system with n-1 + 2 ie n+1 linear equations, for n+1 points in the mesh
+
+11
+Thomas algorithm that is a version of the gaussian elimination optimised for a tridiagonal system, with a linear time complexity is used to solve for the sigma values.
+important to note that due to the construction itself, this specific system is non-singular at least for a uniform mesh. 
+<tell about the thm>
+<induction in the proof>
+it's trivial to show that the coefficients in the last equation follow this particular condition.
+
+12
+kN is dependent on the double derivative of the fucnction f at the end points and the infinity norm of the fourth derivative
+
+13
+As a slight diggression, the hermite cubic spline techniques is presented here.
+relaxation in the constraints assigned to s, but strengthening those on f.
+direct computation of the coefficients is possible in this case.
+
+however, this technique is solely dependent on the functional derivative values at each of the knots.
+
+14
+using n=10, 20 and 40, these plots are made, for the interval [-1,1]. f = exp(x).
+this the natural cubic technique, ie the boundary conditions are given by f''(a)=f''(b) = 0
+
+15
+this plot is prodeced with the help of clamped spline technique.
+both the conditions- f'=s' and f''=s'' were implemented and the accuracy remained similar.
+
+16
+the error is given for three different n values. 
+the infinity norm error basically is the maxmimum error on the interval omega, and the l2 norm denotes the root mean square error.
+in this particular case, there was no drastic improvement in the accuracy after using clamped technique. the convergence rate for the clamped interpolation technique is slighly faster with an increasing n-value.
+
+17
+
+18
+for the linear interpolation, two consecutive points are used on each of the subinterval.
+whereas for the quadratic interpolation, every (x_i, x_i+1, x_i+2) tuple is used i = 0, 3, 6,...
+n = 5
+
+19
+here is a bried comparison, based on the infity norm of the error. 
+clearly, the lagrangian interpolates converge way faster than the cubic spline. 
+
+20
+basically the same content, with rms error
+
+21
+pi = (x-x0)(x-x1)...(x-x_n), therefore of the order n+1
+
+22
